@@ -42,31 +42,57 @@ export const ProposalItem: FC<ProposalItemProps> = ({ id }) => {
   }
 
   // const expiration = proposal.expiration;
-  const expiration = 1;
+  const expiration = 0;
+  const isExpired = isUnixTimeExpired(expiration);
 
   return (
     <>
       <div
-        onClick={() => setIsModelOpen(true)}
-        className="p-4 border rounded-lg shadow-sm bg-white dark:bg-gray-800 hover:border-blue-500 transition-colors"
+        onClick={() => !isExpired && setIsModelOpen(true)}
+        className={`${
+          isExpired
+            ? "cursor-not-allowed border-gray-600"
+            : "hover:border-blue-500"
+        }  p-4 border rounded-lg shadow-sm bg-white dark:bg-gray-800  transition-colors cursor-pointer`}
       >
-        <p className="text-xl font-semibold mb-2">{proposal.title}</p>
-        <p className="text-gray-700 dark:text-gray-300">
+        <p
+          className={`${
+            isExpired ? "text-gray-600" : "text-gray-300 "
+          } text-xl font-semibold mb-2`}
+        >
+          {proposal.title}
+        </p>
+        <p className={`${isExpired ? "text-gray-600" : "text-gray-300"}  `}>
           {proposal?.description}
         </p>
         <div className="flex items-center justify-between mt-4">
           <div className="flex space-x-4">
-            <div className="flex items-center text-green-600">
+            <div
+              className={`${
+                isExpired ? "text-green-800" : "text-green-600"
+              } flex items-center`}
+            >
               <span className="mr-1">👍</span>
               {proposal.votedYesCount}
             </div>
-            <div className="flex items-center text-red-600">
+            <div
+              className={`${
+                isExpired ? "text-red-800" : "text-red-600"
+              } flex items-center`}
+            >
               <span className="mr-1">👎</span>
               {proposal.votedNoCount}
             </div>
           </div>
           <div>
-            <EcText text={`${formatUnixTime(expiration)}`} />
+            {/* <EcText text={`${formatUnixTime(expiration)}`} /> */}
+            <p
+              className={`${
+                isExpired ? "text-gray-600" : "text-gray-400"
+              } text-sm`}
+            >
+              {formatUnixTime(expiration)}
+            </p>
           </div>
         </div>
       </div>
@@ -100,8 +126,12 @@ function isUnixTimeExpired(unixTimeSec: number): boolean {
   return new Date(unixTimeSec * 1000) < new Date();
 }
 
-function formatUnixTime(timestamp: number): string {
-  return new Date(timestamp * 1000).toLocaleString("en-US", {
+function formatUnixTime(timestampSec: number) {
+  if (isUnixTimeExpired(timestampSec)) {
+    return "Expired";
+  }
+
+  return new Date(timestampSec * 1000).toLocaleString("en-US", {
     month: "short",
     day: "2-digit",
     year: "numeric",
