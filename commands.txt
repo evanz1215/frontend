@@ -1,0 +1,215 @@
+sui client call \
+  --package 0xecc35cc6003c193bed740a267621b330bbcb11f3693adb3f3be26e0d7dcb65d7 \
+  --module dashboard \
+  --function create_proposal \
+  --args "Proposal 1" "Proposal description 1" 1772666646 \
+  --gas-budget 100000000
+
+這個指令使用 Sui Client 來與 Sui 區塊鏈 互動，執行特定的智能合約函數。讓我們拆解並分析它的用途：
+
+sui client call
+調用 Sui 智能合約 的命令。
+
+--package 0xecc35cc6003c193bed740a267621b330bbcb11f3693adb3f3be26e0d7dcb65d7
+智能合約包 ID，指定要執行的智能合約（Package）。
+
+--module dashboard
+指定合約內的模組名稱，這裡是 dashboard 模組。
+
+--function create_proposal
+要執行的函數名稱，這裡是 create_proposal，表示創建一個提案。
+
+--args "Proposal 1" "Proposal description 1" 1772666646
+"Proposal 1"：提案標題
+"Proposal description 1"：提案的詳細描述
+1772666646：可能是 UNIX 時間戳（到期時間或創建時間）
+
+--gas-budget 100000000
+交易的 Gas 費用上限，這裡是 100,000,000。
+
+================================================================================================================================================================
+
+sui client ptb \
+  --move-call 0xecc35cc6003c193bed740a267621b330bbcb11f3693adb3f3be26e0d7dcb65d7::dashboard::create_proposal \
+  '"Proposal 2"' \
+  '"Proposal description 2"' \
+  1772666646
+
+sui client ptb
+PTB（Programmable Transaction Block）模式，這是 Sui 用於批量或複雜交易的方式。
+
+--move-call 0xecc35cc6003c193bed740a267621b330bbcb11f3693adb3f3be26e0d7dcb65d7::dashboard::create_proposal
+指定要調用的 Move 智能合約函數，格式是：
+    <Package ID>::<Module Name>::<Function Name>
+    
+    Package ID：0xecc35cc6003c193bed740a267621b330bbcb11f3693adb3f3be26e0d7dcb65d7
+    Module：dashboard
+    Function：create_proposal
+
+'"Proposal 2"'
+提案的標題，這裡是 "Proposal 2"。
+
+'"Proposal description 2"'
+提案的描述，這裡是 "Proposal description 2"。
+
+1772666646
+時間戳，可能代表提案的到期時間。
+
+
+================================================================================================================================================================
+
+sui client ptb \
+  --move-call 0xecc35cc6003c193bed740a267621b330bbcb11f3693adb3f3be26e0d7dcb65d7::dashboard::create_proposal \
+  '"Proposal 3"' '"Proposal description 3"' 1772666646 \
+  --move-call 0xecc35cc6003c193bed740a267621b330bbcb11f3693adb3f3be26e0d7dcb65d7::dashboard::create_proposal \
+  '"Proposal 4"' '"Proposal description 4"' 1772666646 \
+  --move-call 0xecc35cc6003c193bed740a267621b330bbcb11f3693adb3f3be26e0d7dcb65d7::dashboard::create_proposal \
+  '"Proposal 5"' '"Proposal description 5"' 1772666646
+
+================================================================================================================================================================
+
+sui client ptb \
+  --move-call 0xecc35cc6003c193bed740a267621b330bbcb11f3693adb3f3be26e0d7dcb65d7::dashboard::create_proposal \
+  '"Proposal 6"' '"Proposal description 6"' 1772666646 \
+  --split-coin gas "[1000]" \
+  --assign coin \
+  --transfer-objects "[coin]" @0xffff2221321312313
+  --gas-budget 100000000
+
+1. sui client ptb
+這個命令表示發送一筆 Programmable Transaction Block（PTB），允許一次性執行多個操作。
+
+2. --move-call ...::dashboard::create_proposal
+這是 第一個操作，執行 Sui Move 智能合約函數：
+
+Package ID: 0xecc35cc6003c193bed740a267621b330bbcb11f3693adb3f3be26e0d7dcb65d7
+Module: dashboard
+Function: create_proposal
+傳入參數：
+"Proposal 6" → 提案標題
+"Proposal description 6" → 提案內容
+1772666646 → 可能是提案的截止時間（UNIX 時間戳）
+✅ 這個步驟負責創建一個新的提案。
+
+3. --split-coin gas "[1000]"
+這是 第二個操作，它：
+
+從 Gas 代幣（SUI）中分出 1000 個單位（可能是 1000 mist = 0.001 SUI）。
+這樣做的目的可能是 分割 Gas 費用，以便用於轉帳或支付特定費用。
+✅ 這個步驟負責拆分 Gas 代幣。
+
+4. --assign coin
+將拆分出來的 1000 mist 代幣賦值給變數 coin。
+這樣後續的交易可以直接使用 coin 這個變數。
+✅ 這個步驟把拆分出的代幣存到 coin 變數中。
+
+5. --transfer-objects "[coin]" @0xffff2221321312313
+將 coin 這個變數（1000 mist 代幣）轉移到地址 0xffff2221321312313。
+這意味著交易的發起者 給指定的 Sui 地址轉帳 1000 mist（0.001 SUI）。
+✅ 這個步驟負責將拆分出的代幣轉移到指定地址。
+
+6. --gas-budget 100000000
+設置交易的 Gas 費用上限為 100,000,000 mist（100 SUI），確保交易能夠成功執行。
+✅ 這個步驟確保交易有足夠的 Gas 來執行。
+
+
+總結：這段命令的作用
+這條命令使用 PTB（Programmable Transaction Block），一次執行多個操作：
+
+創建一個提案 (Proposal 6)，包含標題、描述、時間戳。
+從 Gas 代幣拆分 1000 mist（0.001 SUI）。
+將拆分出的 1000 mist 轉帳給 0xffff2221321312313。
+設置 Gas 費用上限 100 SUI，確保交易順利執行。
+應用場景
+這樣的操作可能用於：
+
+DAO 治理（允許用戶提交提案）。
+分配資金（拆分 Gas 代幣後轉給指定地址）。
+獎勵機制（例如，創建提案後，轉一筆代幣作為獎勵）。
+
+================================================================================================================================================================
+sui client ptb \ 
+  --move-call {package_id}
+
+
+
+sui client ptb \
+  --move-call 0x6c649e18ac5150439134798f8d552115a5325f7670390f85e457132db773c90f::proposal::create \
+  @0x66b72437873025be881ff77b273517b5b5e2e797e0e6a3bf3fdbde33224cd264 \
+  '"Proposal 1"' '"Proposal description 1"' 1747017239 \
+  --assign proposal_id \
+  --move-call 0x6c649e18ac5150439134798f8d552115a5325f7670390f85e457132db773c90f::dashboard::register_proposal \
+  @0x420dfa97767ecf4784359625f1d952c2ed684f53e2332a33f1b0169ac66b34ca \
+  @0x66b72437873025be881ff77b273517b5b5e2e797e0e6a3bf3fdbde33224cd264 proposal_id \
+  --move-call 0x6c649e18ac5150439134798f8d552115a5325f7670390f85e457132db773c90f::proposal::create \
+  @0x66b72437873025be881ff77b273517b5b5e2e797e0e6a3bf3fdbde33224cd264 \
+  '"Proposal 2"' '"Proposal description 2"' 1747017239 \
+  --assign proposal_id \
+  --move-call 0x6c649e18ac5150439134798f8d552115a5325f7670390f85e457132db773c90f::dashboard::register_proposal \
+  @0x420dfa97767ecf4784359625f1d952c2ed684f53e2332a33f1b0169ac66b34ca \
+  @0x66b72437873025be881ff77b273517b5b5e2e797e0e6a3bf3fdbde33224cd264 proposal_id \
+  --move-call 0x6c649e18ac5150439134798f8d552115a5325f7670390f85e457132db773c90f::proposal::create \
+  @0x66b72437873025be881ff77b273517b5b5e2e797e0e6a3bf3fdbde33224cd264 \
+  '"Proposal 3"' '"Proposal description 3"' 1747017239 \
+  --assign proposal_id \
+  --move-call 0x6c649e18ac5150439134798f8d552115a5325f7670390f85e457132db773c90f::dashboard::register_proposal \
+  @0x420dfa97767ecf4784359625f1d952c2ed684f53e2332a33f1b0169ac66b34ca \
+  @0x66b72437873025be881ff77b273517b5b5e2e797e0e6a3bf3fdbde33224cd264 proposal_id
+
+
+解析步驟
+1. sui client ptb
+sui client ptb 代表 Programmable Transaction Block (PTB)，用於在 Sui 區塊鏈上一次性執行多個交易操作（類似批量交易）。
+2. 第一個 Move 調用：創建提案
+bash
+複製
+編輯
+--move-call 0x5584b1682bfc38a7e622fbbf10d1e0a4a69d22c5620dfcaeafd7fc06a3abba88::proposal::create
+這段表示：
+
+調用 0x5584b1...a88 這個智能合約（package）。
+其中 proposal::create 是 proposal 模組內的 create 函數。
+傳入的參數：
+
+bash
+複製
+編輯
+@0x91ec1ae38bb2b8c328f55c9887fe9ab11cd1d598676e4d0264c90d8be0691bf4 \
+'"Proposal 1"' '"Proposal description 1"' 1747017239
+@0x91ec...bf4 → 提案對象的所有者 (一般是治理代幣持有者的 Object ID)。
+"Proposal 1" → 提案標題（字串）。
+"Proposal description 1" → 提案描述（字串）。
+1747017239 → 提案的截止時間（通常是 UNIX 時間戳）。
+結果：
+這個指令會創建一個提案，並返回提案的 Object ID。
+3. --assign proposal_id
+這個指令將 創建的提案 ID 存入變數 proposal_id，用於後續的 Move 調用。
+
+4. 第二個 Move 調用：將提案註冊到儀表板
+bash
+複製
+編輯
+--move-call 0x5584b1682bfc38a7e622fbbf10d1e0a4a69d22c5620dfcaeafd7fc06a3abba88::dashboard::register_proposal \
+  @0x89f02b8fa1972542242ba09692a8e1632f1762f9990349cdb56b05e872cb5ae8 proposal_id
+這表示：
+
+調用 0x5584b1...a88 這個智能合約。
+dashboard::register_proposal 是 dashboard 模組內的 register_proposal 函數。
+傳入的參數：
+
+bash
+複製
+編輯
+@0x89f02b8fa1972542242ba09692a8e1632f1762f9990349cdb56b05e872cb5ae8 proposal_id
+@0x89f02...ae8 → 儀表板的 Object ID，即提案列表的管理對象。
+proposal_id → 剛剛創建的提案 Object ID（變數）。
+結果：
+這個指令會將新創建的提案登記到 dashboard（類似於提案的列表）。
+總結
+這段命令執行了兩個步驟：
+
+創建提案，並獲取該提案的 Object ID。
+將提案登記到儀表板（dashboard）上，方便治理系統管理提案。
+這適用於 DAO（去中心化自治組織） 或 投票治理機制，確保提案可以被記錄並管理。
+
+================================================================================================================================================================
