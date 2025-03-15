@@ -41,8 +41,8 @@ export const ProposalItem: FC<ProposalItemProps> = ({ id }) => {
     return <EcText text="Not data found!"></EcText>;
   }
 
-  // const expiration = proposal.expiration;
-  const expiration = 0;
+  const expiration = proposal.expiration;
+  // const expiration = 0;
   const isExpired = isUnixTimeExpired(expiration);
 
   return (
