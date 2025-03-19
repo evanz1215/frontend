@@ -42,17 +42,13 @@ const ProposalView = () => {
           <ProposalItem
             key={id}
             id={id}
-            hasVoted={checkVoteNfts(voteNfts, id)}
+            voteNft={voteNfts.find((nft) => nft.proposalId === id)}
           />
         ))}
       </div>
     </>
   );
 };
-
-function checkVoteNfts(nfts: VoteNft[], proposalId: string) {
-  return nfts.some((nft) => nft.proposalId == proposalId);
-}
 
 function getDashboardFields(data: SuiObjectData) {
   if (data.content?.dataType !== "moveObject") {

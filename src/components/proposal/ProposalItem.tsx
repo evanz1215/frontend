@@ -2,15 +2,15 @@ import { useSuiClientQuery } from "@mysten/dapp-kit";
 import { FC, useState } from "react";
 import { EcText } from "../Shared";
 import { SuiObjectData } from "@mysten/sui/client";
-import { Proposal } from "../../types";
+import { Proposal, VoteNft } from "../../types";
 import { VoteModal } from "./VoteModal";
 
 type ProposalItemProps = {
   id: string;
-  hasVoted: boolean;
+  voteNft: VoteNft | undefined;
 };
 
-export const ProposalItem: FC<ProposalItemProps> = ({ id, hasVoted }) => {
+export const ProposalItem: FC<ProposalItemProps> = ({ id, voteNft }) => {
   const [isModelOpen, setIsModelOpen] = useState(false);
 
   const {
@@ -100,7 +100,7 @@ export const ProposalItem: FC<ProposalItemProps> = ({ id, hasVoted }) => {
       <VoteModal
         proposal={proposal}
         isOpen={isModelOpen}
-        hasVoted={hasVoted}
+        hasVoted={!!voteNft}
         onClose={() => setIsModelOpen(false)}
         onVote={(votedYes: boolean) => {
           console.log("Voted: ", votedYes);
