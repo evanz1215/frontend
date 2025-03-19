@@ -7,9 +7,10 @@ import { VoteModal } from "./VoteModal";
 
 type ProposalItemProps = {
   id: string;
+  hasVoted: boolean;
 };
 
-export const ProposalItem: FC<ProposalItemProps> = ({ id }) => {
+export const ProposalItem: FC<ProposalItemProps> = ({ id, hasVoted }) => {
   const [isModelOpen, setIsModelOpen] = useState(false);
 
   const {
@@ -99,6 +100,7 @@ export const ProposalItem: FC<ProposalItemProps> = ({ id }) => {
       <VoteModal
         proposal={proposal}
         isOpen={isModelOpen}
+        hasVoted={hasVoted}
         onClose={() => setIsModelOpen(false)}
         onVote={(votedYes: boolean) => {
           console.log("Voted: ", votedYes);

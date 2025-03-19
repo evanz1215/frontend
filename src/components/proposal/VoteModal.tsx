@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 type VoteModalProps = {
   proposal: Proposal;
   isOpen: boolean;
+  hasVoted: boolean;
   onClose: () => void;
   onVote: (votedYes: boolean) => void;
 };
@@ -20,12 +21,17 @@ type VoteModalProps = {
 export const VoteModal: FC<VoteModalProps> = ({
   proposal,
   isOpen,
+  hasVoted,
   onClose,
   onVote,
 }) => {
   const { connectionStatus } = useCurrentWallet();
   const suiClient = useSuiClient();
-  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+  const {
+    mutate: signAndExecute,
+    isPending,
+    isSuccess,
+  } = useSignAndExecuteTransaction();
   const packageId = useNetworkVariable("packageId");
   const toastId = useRef<number | string>();
 
@@ -76,10 +82,22 @@ export const VoteModal: FC<VoteModalProps> = ({
     );
   };
 
+  const votingDisable = hasVoted || isPending || isSuccess;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="w-full max-w-md p-6 bg-white rounded-lg dark:bg-gray-800">
-        <h2 className="mb-4 text-2xl font-bold">{proposal.title}</h2>
+        <div className="flex items-start justify-between">
+          <h2 className="mb-4 text-2xl font-bold">{proposal.title}</h2>
+          {hasVoted || isSuccess ? (
+            <div className="p-1 text-sm font-medium text-center text-gray-800 bg-green-100 rounded-full w-14">
+              Voted
+            </div>
+          ) : (
+            <div className="w-24 p-1 text-sm font-medium text-center text-gray-800 bg-red-100 rounded-full">Not Voted</div>
+          )}
+        </div>
+
         <p className="mb-6 text-gray-700 dark:text-gray-300">
           {proposal.description}
         </p>
@@ -92,14 +110,16 @@ export const VoteModal: FC<VoteModalProps> = ({
             {connectionStatus == "connected" ? (
               <>
                 <button
+                  disabled={votingDisable}
                   onClick={() => vote(true)}
-                  className="flex-1 px-6 py-2 text-white transition-colors bg-green-500 rounded hover:bg-green-600"
+                  className="flex-1 px-6 py-2 text-white transition-colors bg-green-500 rounded hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
                 >
                   Vote Yes
                 </button>
                 <button
+                  disabled={votingDisable}
                   onClick={() => vote(false)}
-                  className="flex-1 px-6 py-2 text-white transition-colors bg-red-500 rounded hover:bg-red-600"
+                  className="flex-1 px-6 py-2 text-white transition-colors bg-red-500 rounded hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
                 >
                   Vote No
                 </button>
