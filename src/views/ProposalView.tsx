@@ -7,7 +7,7 @@ import { VoteNft } from "../types";
 
 const ProposalView = () => {
   const dashboardId = useNetworkVariable("dashboardId");
-  const { data: voteNftsRes } = useVoteNfts();
+  const { data: voteNftsRes, refetch: refetchNfts } = useVoteNfts();
 
   const {
     data: dataResponse,
@@ -42,6 +42,7 @@ const ProposalView = () => {
           <ProposalItem
             key={id}
             id={id}
+            onVoteTxSuccess={() => refetchNfts()}
             voteNft={voteNfts.find((nft) => nft.proposalId === id)}
           />
         ))}
