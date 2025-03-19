@@ -56,13 +56,20 @@ export const ProposalItem: FC<ProposalItemProps> = ({ id, voteNft }) => {
             : "hover:border-blue-500"
         }  p-4 border rounded-lg shadow-sm bg-white dark:bg-gray-800  transition-colors cursor-pointer`}
       >
-        <p
-          className={`${
-            isExpired ? "text-gray-600" : "text-gray-300 "
-          } text-xl font-semibold mb-2`}
-        >
-          {proposal.title}
-        </p>
+        <div className="flex justify-between">
+          <p
+            className={`${
+              isExpired ? "text-gray-600" : "text-gray-300 "
+            } text-xl font-semibold mb-2`}
+          >
+            {proposal.title}
+          </p>
+
+          {!!voteNft && (
+            <img className="w-8 h-8 rounded-full " src={voteNft?.url} />
+          )}
+        </div>
+
         <p className={`${isExpired ? "text-gray-600" : "text-gray-300"}  `}>
           {proposal?.description}
         </p>
