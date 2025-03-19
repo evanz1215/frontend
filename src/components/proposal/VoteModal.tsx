@@ -1,5 +1,14 @@
-import { FC } from "react";
+import { FC, useRef } from "react";
 import { Proposal } from "../../types";
+import {
+  ConnectButton,
+  useCurrentWallet,
+  useSignAndExecuteTransaction,
+  useSuiClient,
+} from "@mysten/dapp-kit";
+import { useNetworkVariable } from "../../config/networkConfig";
+import { Transaction } from "@mysten/sui/transactions";
+import { toast } from "react-toastify";
 
 type VoteModalProps = {
   proposal: Proposal;
@@ -14,12 +23,63 @@ export const VoteModal: FC<VoteModalProps> = ({
   onClose,
   onVote,
 }) => {
+  const { connectionStatus } = useCurrentWallet();
+  const suiClient = useSuiClient();
+  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+  const packageId = useNetworkVariable("packageId");
+  const toastId = useRef<number | string>();
+
   if (!isOpen) return null;
 
+  const showToast = (message: string) => (toastId.current = toast(message));
+  const dismissToast = (message: string) => {
+    toast.dismiss(toastId.current);
+    toast(message, {
+      autoClose: 2000,
+    });
+  };
+
+  const vote = (voteYes: boolean) => {
+    const tx = new Transaction();
+
+    tx.moveCall({
+      arguments: [
+        tx.object(proposal.id.id),
+        tx.pure.bool(voteYes),
+        tx.object("0x6"),
+      ],
+      target: `${packageId}::proposal::vote`,
+    });
+    showToast("Processing Transaction...");
+    signAndExecute(
+      {
+        transaction: tx,
+      },
+      {
+        onError: () => {
+          dismissToast("Transaction failed!");
+        },
+        onSuccess: async ({ digest }) => {
+          await suiClient.waitForTransaction({
+            digest,
+            options: {
+              showEffects: true,
+            },
+          });
+
+          // const objectId = effects?.created?.[0]?.reference.objectId;
+
+          dismissToast("Transaction successful!");
+          onVote(voteYes);
+        },
+      }
+    );
+  };
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-md w-full">
-        <h2 className="text-2xl font-bold mb-4">{proposal.title}</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="w-full max-w-md p-6 bg-white rounded-lg dark:bg-gray-800">
+        <h2 className="mb-4 text-2xl font-bold">{proposal.title}</h2>
         <p className="mb-6 text-gray-700 dark:text-gray-300">
           {proposal.description}
         </p>
@@ -29,22 +89,30 @@ export const VoteModal: FC<VoteModalProps> = ({
             <span>👎No votes: {proposal.votedNoCount}</span>
           </div>
           <div className="flex justify-between gap-4">
-            <button
-              onClick={() => onVote(true)}
-              className="flex-1 bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition-colors"
-            >
-              Vote Yes
-            </button>
-            <button
-              onClick={() => onVote(false)}
-              className="flex-1 bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 transition-colors"
-            >
-              Vote No
-            </button>
+            {connectionStatus == "connected" ? (
+              <>
+                <button
+                  onClick={() => vote(true)}
+                  className="flex-1 px-6 py-2 text-white transition-colors bg-green-500 rounded hover:bg-green-600"
+                >
+                  Vote Yes
+                </button>
+                <button
+                  onClick={() => vote(false)}
+                  className="flex-1 px-6 py-2 text-white transition-colors bg-red-500 rounded hover:bg-red-600"
+                >
+                  Vote No
+                </button>
+              </>
+            ) : (
+              <div>
+                <ConnectButton />
+              </div>
+            )}
           </div>
           <button
             onClick={onClose}
-            className="w-full border border-gray-300 dark:border-gray-600 px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="w-full px-4 py-2 transition-colors border border-gray-300 rounded dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             Cancel
           </button>

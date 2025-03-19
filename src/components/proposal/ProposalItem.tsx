@@ -100,7 +100,10 @@ export const ProposalItem: FC<ProposalItemProps> = ({ id }) => {
         proposal={proposal}
         isOpen={isModelOpen}
         onClose={() => setIsModelOpen(false)}
-        onVote={(votedYes: boolean) => console.log("Voted: ", votedYes)}
+        onVote={(votedYes: boolean) => {
+          console.log("Voted: ", votedYes);
+          setIsModelOpen(false);
+        }}
       />
     </>
   );
@@ -122,16 +125,16 @@ function parseProposal(data: SuiObjectData): Proposal | null {
   };
 }
 
-function isUnixTimeExpired(unixTimeSec: number): boolean {
-  return new Date(unixTimeSec * 1000) < new Date();
+function isUnixTimeExpired(unixTimeMs: number): boolean {
+  return new Date(unixTimeMs) < new Date();
 }
 
-function formatUnixTime(timestampSec: number) {
-  if (isUnixTimeExpired(timestampSec)) {
+function formatUnixTime(timestampMs: number) {
+  if (isUnixTimeExpired(timestampMs)) {
     return "Expired";
   }
 
-  return new Date(timestampSec * 1000).toLocaleString("en-US", {
+  return new Date(timestampMs).toLocaleString("en-US", {
     month: "short",
     day: "2-digit",
     year: "numeric",

@@ -136,21 +136,21 @@ sui client ptb \
 sui client ptb \
   --move-call 0x6c649e18ac5150439134798f8d552115a5325f7670390f85e457132db773c90f::proposal::create \
   @0x66b72437873025be881ff77b273517b5b5e2e797e0e6a3bf3fdbde33224cd264 \
-  '"Proposal 1"' '"Proposal description 1"' 1747017239 \
+  '"Proposal 1"' '"Proposal description 1"' 1747017239000 \
   --assign proposal_id \
   --move-call 0x6c649e18ac5150439134798f8d552115a5325f7670390f85e457132db773c90f::dashboard::register_proposal \
   @0x420dfa97767ecf4784359625f1d952c2ed684f53e2332a33f1b0169ac66b34ca \
   @0x66b72437873025be881ff77b273517b5b5e2e797e0e6a3bf3fdbde33224cd264 proposal_id \
   --move-call 0x6c649e18ac5150439134798f8d552115a5325f7670390f85e457132db773c90f::proposal::create \
   @0x66b72437873025be881ff77b273517b5b5e2e797e0e6a3bf3fdbde33224cd264 \
-  '"Proposal 2"' '"Proposal description 2"' 1747017239 \
+  '"Proposal 2"' '"Proposal description 2"' 1747017239000 \
   --assign proposal_id \
   --move-call 0x6c649e18ac5150439134798f8d552115a5325f7670390f85e457132db773c90f::dashboard::register_proposal \
   @0x420dfa97767ecf4784359625f1d952c2ed684f53e2332a33f1b0169ac66b34ca \
   @0x66b72437873025be881ff77b273517b5b5e2e797e0e6a3bf3fdbde33224cd264 proposal_id \
   --move-call 0x6c649e18ac5150439134798f8d552115a5325f7670390f85e457132db773c90f::proposal::create \
   @0x66b72437873025be881ff77b273517b5b5e2e797e0e6a3bf3fdbde33224cd264 \
-  '"Proposal 3"' '"Proposal description 3"' 1747017239 \
+  '"Proposal 3"' '"Proposal description 3"' 1747017239000 \
   --assign proposal_id \
   --move-call 0x6c649e18ac5150439134798f8d552115a5325f7670390f85e457132db773c90f::dashboard::register_proposal \
   @0x420dfa97767ecf4784359625f1d952c2ed684f53e2332a33f1b0169ac66b34ca \
@@ -213,3 +213,27 @@ proposal_id → 剛剛創建的提案 Object ID（變數）。
 這適用於 DAO（去中心化自治組織） 或 投票治理機制，確保提案可以被記錄並管理。
 
 ================================================================================================================================================================
+
+
+sui client ptb \
+  --move-call 0x266af05d6515bf52657021018f695d807328d45d89c44ca4c9cbdaa2aa319433::proposal::create \
+  @0xa7fcdf6e9494f9d8b232eb902bbaa76faf060a05ae40963dd0e81d404ff62572 \
+  '"Proposal 1"' '"Proposal description 1"' 1747017239000 \
+  --assign proposal_id \
+  --move-call 0x266af05d6515bf52657021018f695d807328d45d89c44ca4c9cbdaa2aa319433::dashboard::register_proposal \
+  @0xdfa676778bd477825744d39b16d8081cf4cae83c4013d38d5326f9e16e214cf4 \
+  @0xa7fcdf6e9494f9d8b232eb902bbaa76faf060a05ae40963dd0e81d404ff62572 proposal_id \
+  --move-call 0x266af05d6515bf52657021018f695d807328d45d89c44ca4c9cbdaa2aa319433::proposal::create \
+  @0xa7fcdf6e9494f9d8b232eb902bbaa76faf060a05ae40963dd0e81d404ff62572 \
+  '"Proposal 2"' '"Proposal description 2"' 1747017239000 \
+  --assign proposal_id \
+  --move-call 0x266af05d6515bf52657021018f695d807328d45d89c44ca4c9cbdaa2aa319433::dashboard::register_proposal \
+  @0xdfa676778bd477825744d39b16d8081cf4cae83c4013d38d5326f9e16e214cf4 \
+  @0xa7fcdf6e9494f9d8b232eb902bbaa76faf060a05ae40963dd0e81d404ff62572 proposal_id \
+  --move-call 0x266af05d6515bf52657021018f695d807328d45d89c44ca4c9cbdaa2aa319433::proposal::create \
+  @0xa7fcdf6e9494f9d8b232eb902bbaa76faf060a05ae40963dd0e81d404ff62572 \
+  '"Proposal 3"' '"Proposal description 3"' 1747017239000 \
+  --assign proposal_id \
+  --move-call 0x266af05d6515bf52657021018f695d807328d45d89c44ca4c9cbdaa2aa319433::dashboard::register_proposal \
+  @0xdfa676778bd477825744d39b16d8081cf4cae83c4013d38d5326f9e16e214cf4 \
+  @0xa7fcdf6e9494f9d8b232eb902bbaa76faf060a05ae40963dd0e81d404ff62572 proposal_id
