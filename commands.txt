@@ -237,3 +237,16 @@ sui client ptb \
   --move-call 0x266af05d6515bf52657021018f695d807328d45d89c44ca4c9cbdaa2aa319433::dashboard::register_proposal \
   @0xdfa676778bd477825744d39b16d8081cf4cae83c4013d38d5326f9e16e214cf4 \
   @0xa7fcdf6e9494f9d8b232eb902bbaa76faf060a05ae40963dd0e81d404ff62572 proposal_id
+
+
+
+sui client ptb \
+  --move-call 0xea9f5bec317fb55d0fa9894575ad3cefc30646da0be3c6ae57db74f70901d135::proposal::set_delisted_status \
+  @0x6f5b7ace9000e1687ec00cbf10a96374f8d5243f9e2b81fa5e2cfdd0441ee535 \
+  @0xa156abddd5953795aa21ec0cdbf58b01730e9baa19e9ad8e708fc73907b1127b
+
+
+sui client ptb \
+  --move-call 0xea9f5bec317fb55d0fa9894575ad3cefc30646da0be3c6ae57db74f70901d135::proposal::remove \
+  @0xed191a3e381e904bfb11b1cf238faaca8a05f882f88e9662113f79f9f963ee35 \
+  @0xa156abddd5953795aa21ec0cdbf58b01730e9baa19e9ad8e708fc73907b1127b

@@ -39,7 +39,7 @@ export const ProposalItem: FC<ProposalItemProps> = ({
   }
 
   if (!dataResponse.data) {
-    return <EcText text="Not Found"></EcText>;
+    return null;
   }
 
   const proposal = parseProposal(dataResponse.data);
@@ -48,9 +48,12 @@ export const ProposalItem: FC<ProposalItemProps> = ({
     return <EcText text="Not data found!"></EcText>;
   }
 
+  console.log(proposal);
+
   const expiration = proposal.expiration;
   // const expiration = 0;
-  const isExpired = isUnixTimeExpired(expiration);
+  const isDelisted = proposal.status.variant === "Delisted";
+  const isExpired = isUnixTimeExpired(expiration) || isDelisted;
 
   return (
     <>
@@ -105,7 +108,7 @@ export const ProposalItem: FC<ProposalItemProps> = ({
                 isExpired ? "text-gray-600" : "text-gray-400"
               } text-sm`}
             >
-              {formatUnixTime(expiration)}
+              {isDelisted ? "Delisted" : formatUnixTime(expiration)}
             </p>
           </div>
         </div>
@@ -127,9 +130,7 @@ export const ProposalItem: FC<ProposalItemProps> = ({
 };
 
 function parseProposal(data: SuiObjectData): Proposal | null {
-  if (data.content?.dataType !== "moveObject") {
-    return null;
-  }
+  if (data.content?.dataType !== "moveObject") return null;
 
   const { voted_yes_count, voted_no_count, expiration, ...rest } = data.content
     .fields as any;
