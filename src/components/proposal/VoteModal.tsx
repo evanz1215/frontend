@@ -31,13 +31,16 @@ export const VoteModal: FC<VoteModalProps> = ({
     mutate: signAndExecute,
     isPending,
     isSuccess,
+    reset,
   } = useSignAndExecuteTransaction();
   const packageId = useNetworkVariable("packageId");
   const toastId = useRef<number | string>();
 
   if (!isOpen) return null;
 
-  const showToast = (message: string) => (toastId.current = toast(message));
+  const showToast = (message: string) =>
+    (toastId.current = toast(message, { autoClose: false }));
+
   const dismissToast = (message: string) => {
     toast.dismiss(toastId.current);
     toast(message, {
@@ -74,7 +77,7 @@ export const VoteModal: FC<VoteModalProps> = ({
           });
 
           // const objectId = effects?.created?.[0]?.reference.objectId;
-
+          reset();
           dismissToast("Transaction successful!");
           onVote(voteYes);
         },
@@ -94,7 +97,9 @@ export const VoteModal: FC<VoteModalProps> = ({
               Voted
             </div>
           ) : (
-            <div className="w-24 p-1 text-sm font-medium text-center text-gray-800 bg-red-100 rounded-full">Not Voted</div>
+            <div className="w-24 p-1 text-sm font-medium text-center text-gray-800 bg-red-100 rounded-full">
+              Not Voted
+            </div>
           )}
         </div>
 
