@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --mode development",
     "dev:test": "vite --mode test",
+    "dev:local": "vite --mode localnet",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
